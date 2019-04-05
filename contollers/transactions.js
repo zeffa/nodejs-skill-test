@@ -7,7 +7,7 @@ export class TransactionsController {
             .then(users=>{
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Fetching Transactions", diff))
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Fetching Transactions", diff))
                     .then(res => {
                         console.log(res, diff)
                     })
@@ -22,7 +22,7 @@ export class TransactionsController {
             .then(transaction => {
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Transaction creation", diff))
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Transaction creation", diff))
                     .then(res => {
                         console.log(res, diff)
                     })
@@ -37,7 +37,7 @@ export class TransactionsController {
             .then(user=>{
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Update Transaction", diff))
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Update Transaction", diff))
                     .then(res => {
                         console.log(res, diff)
                     })
@@ -56,11 +56,15 @@ export class TransactionsController {
             .then(response => {
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Compound interest calculator", diff))
-                    .then(res => {
-                        console.log(res, diff)
+
+                return {diff, compound_interest:response}
+            })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Compound interest calculator", result.diff))
+                    .then(response => {
+                        console.log(res, result.diff)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.compound_interest})
                     })
-                res.json(response)
             })
             .catch(error=>res.json(error));
     }
@@ -75,20 +79,35 @@ export class TransactionsController {
             .then(response => {
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Simple interest calc", diff))
-                    .then(res => {
-                        console.log(res, diff)
+
+                return {diff:diff, simple_interest:response}
+            })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Simple interest calc", result.diff))
+                    .then(response => {
+                        console.log(res, result.diff)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.simple_interest})
                     })
-                res.json(response)
             })
             .catch(error=>res.json(error));
     }
 
     getCostOfTransaction(req, res){
+        let startTime = Date.now()
         const price = req.body.price
         services.costOfTransaction(price)
-            .then(result => res.json(result))
-            .then(error => res.json(error))
+            .then(result => {
+                let endTime = Date.now()
+                let diff = endTime - startTime
+                return {diff:diff, cost: result}
+            })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Cost of Transaction", result.diff))
+                    .then(response => {
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.cost})
+                    })
+            })
+            .catch(error => res.json(error))
     }
 
     getWithholdingTax(req, res){
@@ -98,13 +117,15 @@ export class TransactionsController {
             .then(result => {
                 let endTime = new Date().getMilliseconds()
                 let diff = endTime -startTime
-                services.insertTransactions(this.formulateTransactionObject("Withholding tax calculator", diff))
-                    .then(res => {
-                    console.log(res, diff)
-                })
-                res.json(result)
+                return {diff:diff, withholding_tax:result}
             })
-            .then(error => res.json(error))
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Withholding tax calculator", result.diff))
+                    .then(response => {
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.withholding_tax})
+                    })
+            })
+            .catch(error => res.json(error))
     }
 
     getVatTax(req, res){
@@ -114,13 +135,16 @@ export class TransactionsController {
             .then(result => {
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Vat tax calculator", diff))
-                    .then(res => {
-                        console.log(res, diff)
-                    })
-                res.json(result)
+                return {diff:diff, vatValue:result}
             })
-            .then(error => res.json(error))
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Vat tax calculator", result.diff))
+                    .then(response => {
+                        console.log(res, result)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.vatValue})
+                    })
+            })
+            .catch(error => res.json(error))
     }
 
     getItemDiscount(req, res){
@@ -131,11 +155,16 @@ export class TransactionsController {
             .then(result => {
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Item discount calculator", diff))
-                    .then(res => {
-                        console.log(res, diff)
+
+                return {diff:diff, discount: result}
+                // res.json(result)
+            })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Item discount calculator", result.diff))
+                    .then(response => {
+                        console.log(response, result.diff)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.discount})
                     })
-                res.json(result)
             })
             .catch(error => res.json(error))
     }
@@ -147,12 +176,16 @@ export class TransactionsController {
             .then(result => {
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
-                services.insertTransactions(this.formulateTransactionObject("Number of day left in Month", diff))
-                    .then(res => {
-                        console.log(res, diff)
+                return  {"diff":diff, "days_in_Month":result}
+            })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Number of day left in Month", result.diff))
+                    .then(response => {
+                        console.log(res, result.diff)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.days_in_Month})
                     })
-                res.json(result)
-            }).catch(error => res.json(error))
+            })
+            .catch(error => res.json(error))
     }
 
     getDaysLeftInYear(req, res){
@@ -161,12 +194,16 @@ export class TransactionsController {
         services.noOfDaysLeftInYearFromGivenDate(fromDate).then(result => {
             let endTime = new Date().getMilliseconds()
             let diff  = endTime - startTime
-            services.insertTransactions(this.formulateTransactionObject("No of days left in year", diff))
-                .then(res => {
-                    console.log(res, diff)
-                })
-            res.json(result)
-        }).catch(error => res.json(error))
+            return  {"diff":diff, "days_in_year":result}
+        })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("No of days left in year", result.diff))
+                    .then(response => {
+                        console.log(res, result.diff)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.days_in_year})
+                    })
+            })
+            .catch(error => res.json(error))
     }
 
     getMonthsLeftInYear(req, res){
@@ -175,17 +212,22 @@ export class TransactionsController {
         services.noOfMonthsLeftInYearFromGivenDate(fromDate).then(result => {
             let endTime = new Date().getMilliseconds()
             let diff  = endTime - startTime
-            services.insertTransactions(this.formulateTransactionObject("Months left in year", diff))
-                .then(res => {
-                    console.log(res, diff)
-                })
-            res.json(result)
-        }).catch(error => res.json(error))
+
+            return  {"diff":diff, "months_in_year":result}
+        })
+            .then(result => {
+                services.insertTransactions(TransactionsController.formulateTransactionObject("Months left in year", result.diff))
+                    .then(response => {
+                        console.log(res, result.diff)
+                        res.json({transaction_name: response.transaction_name, computation_time: response.computation_time, created_at: response.createdAt, updated_at: response.updatedAt, result: result.months_in_year})
+                    })
+            })
+            .catch(error => res.json(error))
     }
 
-    formulateTransactionObject(txnName, computeTime){
+    static formulateTransactionObject(txnName, computeTime){
         return {
-            transaction_name: "Withholding tax calculator",
+            transaction_name: txnName,
             computation_time: computeTime
         }
     }

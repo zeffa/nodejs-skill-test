@@ -12,7 +12,7 @@ export const compoundInterestCalculator = (principleAmount, interestRatePerMonth
             let _exponent = Math.pow(onePlusInterestAmt, noOfMonths);
             let exponentMinusOne = _exponent - 1;
             let monthlyCompoundInterest = principleAmount * exponentMinusOne;
-            resolve({success: 1, compoundInterest: monthlyCompoundInterest})
+            resolve(monthlyCompoundInterest)
         } catch (e) {
             reject(e)
         }
@@ -29,7 +29,7 @@ export const simpleInterestCalculator = (principleAmount, interestRatePerMonth, 
         try {
             let rate = interestRatePerMonth / 100;
             let monthlySimpleInterest = principleAmount * rate * noOfMonths;
-            resolve({simpleInterest: monthlySimpleInterest})
+            resolve(monthlySimpleInterest)
         } catch (e) {
             reject(e)
         }
@@ -74,13 +74,6 @@ export const withHoldingTax = (income) => {
             reject(e)
         }
     })
-    // if (isNaN(income)) {
-    //     throw new Error("Income should be number");
-    // }
-    // if (income < 0) {
-    //     throw new Error("Income should be value greater than or equal to zero")
-    // }
-    // return income * (5 / 100);
 };
 
 export const vatCalculator = (price) => {
@@ -93,13 +86,6 @@ export const vatCalculator = (price) => {
             resolve(price * (16 / 100))
         }
     })
-    // if (isNaN(price)) {
-    //     throw new Error("Price should be number")
-    // }
-    // if (price <= 0) {
-    //     throw new Error("Item should have realistic price")
-    // }
-    // return price * (16 / 100);
 };
 
 export const itemDiscount = (amount, _discountInPercentage) => {
@@ -161,25 +147,6 @@ export const noOfMonthsLeftInYearFromGivenDate = (date) => {
             reject(e)
         }
     })
-    // console.log(new Date().getTime())
-    // let startTime = new Date().getTime();
-    // let givenDay = moment(date, 'DD-MM-YYYY');
-    // let endDayOfYear = moment(givenDay).endOf('year');
-    // let months = endDayOfYear.diff(givenDay, 'months')
-    //
-    // let endTime = new Date().getTime();
-    //
-    // //In seconds
-    // let diff = (endTime - startTime) / 1000;
-    //
-    // let body = {
-    //     transaction_name: 'noOfMonthsLeftInYearFromGivenDate',
-    //     computation_time: diff / 1000
-    // }
-    // insertTransactions(body).then(transaction => console.log(transaction)).catch(error => console.log(error))
-    //
-    // console.log(months + 1, diff)
-    // return months + 1
 }
 
 export const getAllTransactions = () => {

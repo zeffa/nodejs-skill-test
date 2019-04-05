@@ -35,7 +35,7 @@ export default class TransactionsRoute {
         this.router.route(`/days_left_in_month`)
             .post(this.controller.getDaysLeftInMonth)
 
-        this.router.route(`/days_left_year`)
+        this.router.route(`/days_left_in_year`)
             .post(this.controller.getDaysLeftInYear)
 
         this.router.route(`/months_left_in_year`)
