@@ -34,14 +34,14 @@ export class TransactionsController {
     updateTransaction(req, res){
         let startTime = new Date().getMilliseconds()
         services.updateTransaction(req.params.transactionName, req.body)
-            .then(user=>{
+            .then(transaction=>{
                 let endTime = new Date().getMilliseconds()
                 let diff  = endTime - startTime
                 services.insertTransactions(TransactionsController.formulateTransactionObject("Update Transaction", diff))
                     .then(res => {
                         console.log(res, diff)
                     })
-                res.json(user)
+                res.json(transaction)
             })
             .catch(error=>res.json(error))
     }

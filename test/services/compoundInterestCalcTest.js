@@ -21,7 +21,7 @@ describe('calculateInterests', function () {
     it('Should calculate monthly compound interest given parameters', (done) => {
         let resolvePromise = appServices.compoundInterestCalculator(1000, 1, 12);
         resolvePromise.then( (result) => {
-            expect(result).to.equal({success: 1, compoundInterest: 126.825});
+            expect(result).to.equal(126.825);
         }).catch(error =>{}).finally(done());
     });
 
@@ -29,7 +29,7 @@ describe('calculateInterests', function () {
         let resultPromise = appServices.simpleInterestCalculator(1000, 1, 12);
         resultPromise
             .then(result => {
-                expect(result).to.equal({simpleInterest: 120})
+                expect(result).to.equal(120)
             })
             .catch(error=>{
 
